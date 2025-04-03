@@ -73,7 +73,7 @@
         </el-form-item>
         <!-- Correo -->
         <el-form-item size="large" prop="email">
-          <el-input v-model="ruleForm.email" placeholder="Correo" :disabled="loading" />
+          <el-input v-model="ruleForm.email" placeholder="Correo" :disabled="authStore.loading" />
         </el-form-item>
         <!-- Contraseña -->
         <el-form-item prop="password">
@@ -83,7 +83,7 @@
             type="password"
             autocomplete="off"
             placeholder="Contraseña"
-            :disabled="loading"
+            :disabled="authStore.loading"
           />
         </el-form-item>
         <!-- Toggle -->
@@ -98,7 +98,7 @@
                 style="width: 100%"
                 color="#7451B0"
                 type="success"
-                :loading="loading"
+                :loading="authStore.loading"
                 @click="loginForm(formRef)"
               >
                 Iniciar sesión
@@ -125,7 +125,7 @@
                 style="width: 100%"
                 color="#7451B0"
                 type="success"
-                :loading="loading"
+                :loading="authStore.loading"
                 @click="registerForm(formRef)"
               >
                 Registrarse
@@ -145,8 +145,8 @@
           </el-row>
         </el-form-item>
       </el-form>
-      <div v-if="errorMessage" style="color: red; text-align: center; margin-top: 10px">
-        {{ errorMessage }}
+      <div v-if="authStore.errorMessage" style="color: red; text-align: center; margin-top: 10px">
+        {{ authStore.errorMessage }}
       </div>
     </el-card>
   </el-row>
@@ -156,6 +156,7 @@ import { ref, computed, reactive } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
 import type { ComponentSize, FormInstance, FormRules } from 'element-plus'
+import { useAuthStore } from '../stores/useAuthStore'
 
 import logo from '@/assets/logoSauko.png'
 import foto from '@/assets/fotoLogin.jpg'
@@ -168,6 +169,7 @@ interface RuleForm {
   password: string
 }
 
+const authStore = useAuthStore()
 const formSize = ref<ComponentSize>('default')
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<RuleForm>({
@@ -177,29 +179,15 @@ const ruleForm = reactive<RuleForm>({
   email: '',
   password: '',
 })
+const router = useRouter()
+const swLogin = ref(false)
 
 const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return
   swLogin.value = !swLogin.value
   formEl.resetFields()
 }
-
-// Reactive variables
-const email = ref('')
-const password = ref('')
-const loading = ref(false)
-const errorMessage = ref('')
-
-// Variables de registro
-const name = ref('')
-const last_name = ref('')
-const phone_number = ref('')
-const swLogin = ref(false)
-
-// Router instance
-const router = useRouter()
-
-// Form validation rules
+// Verificar si los campos están bien diligenciados
 const rules: FormRules<RuleForm> = reactive({
   name: [{ required: true, message: 'Por favor ingresa tu nombre', trigger: 'blur' }],
   last_name: [{ required: true, message: 'Por favor ingresa tu apellido', trigger: 'blur' }],
@@ -222,109 +210,66 @@ const rules: FormRules<RuleForm> = reactive({
 })
 const formRef = ref(null)
 
-// Verificar si los campos están bien diligenciados
 
-// Toggle between login and register forms
-const swForm = () => {
-  name.value = ''
-  last_name.value = ''
-  phone_number.value = ''
-  email.value = ''
-  password.value = ''
-}
 
-// Method to handle login form submission
 const loginForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
-
   try {
-    // Validate form asynchronously
     const valid = await formEl.validate()
-
     if (valid) {
-      loading.value = true
-      errorMessage.value = ''
-      try {
-        const response = await axios.post(
-          'http://localhost:3001/usuarios/login',
-          {
-            email: ruleForm.email,
-            password: ruleForm.password,
-          },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        )
-
-        localStorage.setItem('token', response.data.token)
-        router.push('/store')
-
-        console.log('Login exitoso', response.data)
-      } catch (error) {
-        console.error('Hubo un error:', error)
-        errorMessage.value = 'Hubo un error al intentar iniciar sesión. Intenta nuevamente.'
-      } finally {
-        loading.value = false
-      }
+      const { email, password } = ruleForm
+      await authStore.logIn(email, password, router).catch((error) => console.log(error))
     } else {
       console.log('error submit!')
-      loading.value = false
     }
   } catch (error) {
     console.error('Validation failed', error)
-    loading.value = false
   }
 }
 
-// Method to handle register form submission
 const registerForm = async (formEl: FormInstance | undefined) => {
-  if (!formEl) return
-
-  try {
-    // Validate form asynchronously
-    const valid = await formEl.validate()
-
-    if (valid) {
-      loading.value = true
-      errorMessage.value = ''
-      try {
-        const response = await axios.post(
-          'http://localhost:3001/usuarios',
-          {
-            name: ruleForm.name,
-            last_name: ruleForm.last_name,
-            cedula: '1192804870',
-            phone_number: ruleForm.phone_number,
-            email: ruleForm.email,
-            password: ruleForm.password,
-            id_rol: '1',
-            image: 'image.png',
-          },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        )
-
-        console.log('Register exitoso', response.data)
-        // Redirect or other action after successful registration
-      } catch (error) {
-        console.error('Hubo un error:', error)
-        errorMessage.value = 'Hubo un error al intentar iniciar sesión. Intenta nuevamente.'
-      } finally {
-        loading.value = false
-      }
-    } else {
-      console.log('error submit!')
-      loading.value = false
-    }
-  } catch (error) {
-    console.error('Validation failed', error)
-    loading.value = false
-  }
+  // if (!formEl) return
+  // try {
+  //   // Validate form asynchronously
+  //   const valid = await formEl.validate()
+  //   if (valid) {
+  //     loading.value = true
+  //     errorMessage.value = ''
+  //     try {
+  //       const response = await axios.post(
+  //         'http://localhost:3001/usuarios',
+  //         {
+  //           name: ruleForm.name,
+  //           last_name: ruleForm.last_name,
+  //           cedula: '1192804870',
+  //           phone_number: ruleForm.phone_number,
+  //           email: ruleForm.email,
+  //           password: ruleForm.password,
+  //           id_rol: '1',
+  //           image: 'image.png',
+  //         },
+  //         {
+  //           headers: {
+  //             'Content-Type': 'application/json',
+  //           },
+  //         }
+  //       )
+  //       console.log('Register exitoso', response.data)
+  //       // Redirect or other action after successful registration
+  //     } catch (error) {
+  //       console.error('Hubo un error:', error)
+  //       errorMessage.value = 'Hubo un error al intentar iniciar sesión. Intenta nuevamente.'
+  //     } finally {
+  //       loading.value = false
+  //     }
+  //   } else {
+  //     console.log('error submit!')
+  //     loading.value = false
+  //   }
+  // } catch (error) {
+  //   console.error('Validation failed', error)
+  //   loading.value = false
+  // }
 }
 </script>
 
