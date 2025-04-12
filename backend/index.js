@@ -1,7 +1,9 @@
 const express = require('express');
 const app = express();
 const userRoutes = require('./src/routes/userRoutes');
+const productRoutes = require('./src/routes/productRoutes');
 const cors = require('cors');
+const chalk = require('chalk');
 require('dotenv').config();
 
 
@@ -19,6 +21,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/', userRoutes);
+app.use('/', productRoutes);
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
@@ -31,5 +34,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(port, () => {
-    console.log(`Servidor en ejecución en http://127.0.0.1:${port}`);
+    console.log(chalk.bgCyan(`Servidor en ejecución en http://127.0.0.1:${port}`));
 });

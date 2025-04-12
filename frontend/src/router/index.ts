@@ -1,8 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue';
-import Login from '../views/Login.vue';
-import Store from '../views/Store.vue';
-import { useAuthStore } from '../stores/useAuthStore';
+import GestionProductos from '../views/GestionProductos.vue'
+import Tienda from '../views/Tienda.vue'
+import Login from '../views/Login.vue'
+import { useAuthStore } from '../stores/useAuthStore'
+import { jwtDecode } from 'jwt-decode'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -10,18 +11,18 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView,
+      component: Tienda,
+    },
+    {
+      path: '/gestion_productos',
+      name: 'GestionProductos',
+      component: GestionProductos,
+      meta: { requiresAuth: true },
     },
     {
       path: '/login',
       name: 'login',
       component: Login,
-    },
-    {
-      path: '/store',
-      component: Store,
-      name: 'store',
-      meta: { requiresAuth: true }
     },
     {
       path: '/about',
@@ -32,14 +33,33 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const authStore = useAuthStore();
-  const isAuthenticated = authStore.isAuthenticated;
+  const authStore = useAuthStore()
+  const token = authStore.token
 
-  if (to.meta.requiresAuth && !isAuthenticated) {
-    next({ name: 'login' });
+  if (to.meta.requiresAuth) {
+    if (!token) {
+      return next({ name: 'login' })
+    }
+
+    try {
+      const decoded: JwtPayload = jwtDecode(token)
+      const isExpired = decoded.exp * 1000 < Date.now()
+
+      if (isExpired) {
+        console.warn('Token expirado')
+        authStore.logOut()
+        return next({ name: 'login' })
+      }
+
+      return next()
+    } catch (err) {
+      console.error('Token inválido', err)
+      authStore.logOut()
+      return next({ name: 'login' })
+    }
   } else {
-    next();
+    return next()
   }
-});
+})
 
 export default router

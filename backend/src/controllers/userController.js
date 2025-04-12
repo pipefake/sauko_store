@@ -102,6 +102,7 @@ const iniciarSesion = async (req, res) => {
                 u.id_usuario,
                 u.name,
                 u.email,
+                u.id_rol,
                 u.password,
                 u.cedula 
             FROM
@@ -124,18 +125,16 @@ const iniciarSesion = async (req, res) => {
                 id: usuario.id_usuario,
                 cedula: usuario.cedula,
                 nombre: usuario.nombre,
+                rol:  usuario.id_rol,
                 email: usuario.email,
                 sede: usuario.sede,
                 departamento: usuario.departamento
-            }, process.env.JWT_SECRET, { expiresIn: '2h' });
+            }, process.env.JWT_SECRET, { expiresIn: '12h' });
 
             // Enviar la respuesta con el token y los detalles del usuario
             res.json({
                 mensaje: 'Bienvenido',
-                id: usuario.id,
-                nombre: usuario.nombre,
                 token,
-                email: usuario.email
             });
         } else {
             res.status(400).json({ mensaje: 'Contraseña incorrecta' });

@@ -1,0 +1,16 @@
+const express = require('express');
+const router = express.Router();
+const productController = require('../controllers/productController');
+const upload = require("../middleware/multer");
+const { verifyToken, verifyAuthorization } = require('../middleware/Auth');
+
+//rutas para los productos
+router.post('/producto', upload.single('image'), verifyToken, verifyAuthorization, productController.agregarProducto);  // Para agregar un nuevo producto
+router.get('/productos', verifyToken, verifyAuthorization, productController.listarProductos);  // Para listar todos los productos
+// router.get('/producto/:id', productController.listarProductoPorId);  // Para listar un producto por ID
+// router.put('/producto/:id', productController.actualizarProducto);  // Para actualizar un producto por ID
+router.delete('/producto/:id', verifyToken, verifyAuthorization, productController.eliminarProducto);  // Para eliminar un producto por ID
+// router.post('/producto/:id', productController.actualizarUsuario);  // Para actualizar un producto por ID
+// router.get('/productos/:categoria', productController.listarProductosPorCategoria);  // Para listar productos por categoría
+
+module.exports = router;
