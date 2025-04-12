@@ -201,19 +201,19 @@ const onSubmit = () => {
               >
                 <el-sub-menu index="2">
                   <template #title>
-                    <el-icon><icon-menu /></el-icon>Navigator Two
+                    <el-icon><icon-menu /></el-icon>Navegador
                   </template>
                   <el-menu-item-group>
-                    <template #title>Group 1</template>
-                    <el-menu-item index="2-1">Option 1</el-menu-item>
-                    <el-menu-item index="2-2">Option 2</el-menu-item>
+                    <template #title>Grupo 1</template>
+                    <el-menu-item index="2-1">Opción 1</el-menu-item>
+                    <el-menu-item index="2-2">Opción 2</el-menu-item>
                   </el-menu-item-group>
-                  <el-menu-item-group title="Group 2">
-                    <el-menu-item index="2-3">Option 3</el-menu-item>
+                  <el-menu-item-group title="Grupo 2">
+                    <el-menu-item index="2-3">Opción 3</el-menu-item>
                   </el-menu-item-group>
                   <el-sub-menu index="2-4">
-                    <template #title>Option 4</template>
-                    <el-menu-item index="2-4-1">Option 4-1</el-menu-item>
+                    <template #title>Opción 4</template>
+                    <el-menu-item index="2-4-1">Opción 4-1</el-menu-item>
                   </el-sub-menu>
                 </el-sub-menu>
               </el-menu>
@@ -230,13 +230,13 @@ const onSubmit = () => {
                       </el-col>
                       <el-col :span="12">
                         <div class="grid-content ep-bg-purple">
-                          <el-input v-model="search" size="large" placeholder="Type to search" />
+                          <el-input v-model="search" size="large" placeholder="Escribe para buscar" />
                         </div>
                       </el-col>
                     </el-row>
                   </el-container>
                 </template>
-                <el-table :data="filterTableData" style="width: 100%">
+                <el-table :data="filterTableData" style="width: 100%" height="400">
                   <el-table-column prop="nombre" label="Nombre " sortable />
                   <el-table-column prop="descripcion" label="Descripción" />
                   <el-table-column prop="marca" label="Marca" sortable />
@@ -282,16 +282,13 @@ const onSubmit = () => {
                       </el-button>
                       <el-popconfirm
                         class="box-item"
-                        title="Bottom Right prompts info"
-                        placement="bottom-end"
-                          @confirm="handleDelete(scope.row.id_producto)"
+                        title="¿Estás seguro de que quieres eliminar este producto?"
+                        
+                        placement="bottom"
+                        @confirm="handleDelete(scope.row.id_producto)"
                       >
                         <template #reference>
-                          <el-button
-                            size="small"
-                            type="danger"
-                          
-                          >
+                          <el-button size="small" type="danger">
                             <el-icon><DeleteFilled /></el-icon>
                           </el-button>
                         </template>
