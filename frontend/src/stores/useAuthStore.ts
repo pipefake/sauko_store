@@ -23,8 +23,8 @@ export const useAuthStore = defineStore('auth', {
   },
   actions: {
     async logIn(email: string, password: string, router: any) {
-      this.loading = true; 
-      this.errorMessage = ''; 
+      this.loading = true;
+      this.errorMessage = '';
 
       try {
         const response = await axios.post(
@@ -41,7 +41,7 @@ export const useAuthStore = defineStore('auth', {
 
         const { token: authToken } = response.data;
 
-      
+
         this.token = authToken;
         localStorage.setItem('token', authToken);
 
@@ -67,13 +67,14 @@ export const useAuthStore = defineStore('auth', {
         console.error('Login error:', error);
         this.errorMessage = 'Error during login. Please try again.';
       } finally {
-        this.loading = false; 
+        this.loading = false;
       }
     },
-    logOut() {
+    logOut(router: any) {
       this.token = '';
       this.userInfo = null;
       localStorage.removeItem('token');
+      router.push('/login');
     },
   },
 });
