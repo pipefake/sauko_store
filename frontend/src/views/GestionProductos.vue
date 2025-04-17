@@ -8,7 +8,7 @@ import { default as CreateProduct } from '../components/CreateProduct.vue'
 import { default as EditProduct } from '../components/EditProduct.vue'
 import { default as Header } from '../components/Header.vue'
 import 'axios'
-import axiosInstance from '../helpers/axiosInstance'
+import axiosInstance from '../helpers/AxiosInstance'
 import {
   Calendar,
   Search,

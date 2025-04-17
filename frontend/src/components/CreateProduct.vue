@@ -108,7 +108,7 @@
 //IMPORTS
 import { ref, reactive, toRefs } from 'vue'
 import { UploadFilled, CirclePlusFilled } from '@element-plus/icons-vue'
-import axiosInstance from '../helpers/axiosInstance'
+import axiosInstance from '../helpers/AxiosInstance'
 import { ElMessage } from 'element-plus'
 import type { ComponentSize, FormInstance, FormRules } from 'element-plus'
 //REFERENCIAS

@@ -125,7 +125,7 @@
 import { ref, reactive, toRefs, onMounted } from 'vue'
 import { UploadFilled, CirclePlusFilled, EditPen } from '@element-plus/icons-vue'
 import type { ComponentSize, FormInstance, FormRules } from 'element-plus'
-import axiosInstance from '../helpers/axiosInstance'
+import axiosInstance from '../helpers/AxiosInstance'
 import { ElMessage } from 'element-plus'
 //PROPS
 const props = defineProps<{
