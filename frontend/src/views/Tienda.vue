@@ -102,7 +102,7 @@
   </div>
 </template>
   <script setup lang="ts">
-import axiosInstance from '../helpers/axiosInstance'
+import axiosInstance from '../helpers/AxiosInstance'
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useAuthStore } from '../stores/useAuthStore'
 import Header from '../components/Header.vue'
