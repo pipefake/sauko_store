@@ -8,7 +8,7 @@ const verifyToken = async (req, res, next) => {
     const jwtPassword = process.env.JWT_SECRET;
 
     const authHeader = req.headers['authorization'];
-    console.log(authHeader);
+    // console.log(authHeader);
     if (!authHeader) {
         return res.status(401).json({
             mensaje: 'No estás autorizado'

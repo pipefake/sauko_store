@@ -3,96 +3,95 @@
     <el-container>
       <el-container>
         <el-header height="20%" class="headerContainer">
-          <el-row padding="0" justify="space-between" align="middle">
-            <el-col :span="6" :xs="24">
-              <div class="grid-content ep-bg-purple">
-                <el-button @click="isCollapse = !isCollapse">
-                  <el-icon><Expand /></el-icon>
-                </el-button>
-
-                <!-- <el-radio-group v-model="isCollapse" style="margin-bottom: 20px">
-                    <el-radio-button :value="false">expand</el-radio-button>
-                    <el-radio-button :value="true">collapse</el-radio-button>
-                  </el-radio-group> -->
-                <!-- <AdvancedImage :cldImg="myImg" /> -->
-              </div>
-            </el-col>
-            <el-col :span="10" :xs="24">
-              <div class="grid-content ep-bg-purple-light">
-                <el-input v-model="search" style="width: 400px" placeholder="Escribe algo">
-                  <template #prefix>
-                    <el-icon class="el-input__icon"><search /></el-icon>
-                  </template>
-                </el-input>
-              </div>
-            </el-col>
-            <el-col :span="8" :xs="24">
-              <el-col style="height: 100%" justify="end">
-                <el-col>
-                  <div class="grid-content ep-bg-purple">
-                    <el-button @click="salir">
-                      <el-icon><SwitchButton /></el-icon>
-                    </el-button>
-
-                    <!-- <el-radio-group v-model="isCollapse" style="margin-bottom: 20px">
-                    <el-radio-button :value="false">expand</el-radio-button>
-                    <el-radio-button :value="true">collapse</el-radio-button>
-                  </el-radio-group> -->
-                    <!-- <AdvancedImage :cldImg="myImg" /> -->
-                  </div>
-                </el-col>
-              </el-col>
-            </el-col>
-          </el-row>
+          <Header :isBuscador="true" @updateFiltro="filtrarLista" />
         </el-header>
         <el-container height="80%">
-          <el-aside width="200px">
-            <el-scrollbar>
-                <el-menu
-                :collapse="isCollapse"
-                style="background-color: white; height: '100vh'"
-                :default-openeds="['2', '3']"
-              >
-                <el-sub-menu index="2">
-                  <template #title>
-                    <el-icon><icon-menu /></el-icon>Navegador
-                  </template>
-                  <el-menu-item-group>
-                    <template #title>Grupo 1</template>
-                    <el-menu-item index="2-1">Opción 1</el-menu-item>
-                    <el-menu-item index="2-2">Opción 2</el-menu-item>
-                  </el-menu-item-group>
-                  <el-menu-item-group title="Grupo 2">
-                    <el-menu-item index="2-3">Opción 3</el-menu-item>
-                  </el-menu-item-group>
-                  <el-sub-menu index="2-4">
-                    <template #title>Opción 4</template>
-                    <el-menu-item index="2-4-1">Opción 4-1</el-menu-item>
-                  </el-sub-menu>
-                </el-sub-menu>
-              </el-menu>
-            </el-scrollbar>
-          </el-aside>
-          <el-container style="overflow-y: auto; max-height: calc(90vh - 20px); padding: 10px">
-            <el-row gutter="20" justify="start" align="start" wrap style="row-gap: 20px">
+          <el-container
+            justify="center"
+            style="
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              overflow-y: auto;
+              max-height: calc(90vh - 20px);
+              padding: 10px;
+            "
+          >
+            <el-row style="width: 90vw; height: 100%" :gutter="20" justify="left" wrap>
               <el-col
                 v-for="item of filterTableData"
                 :key="item.id_producto"
-                :xs="24"
-                :sm="12"
+                :xs="12"
+                :sm="6"
                 :md="4"
                 :lg="4"
+                :xl="4"
+                style="
+                  padding: 1vh;
+                  height: 300px;
+                  width: 100%;
+                  display: flex;
+                  flex-direction: column;
+                  align-items: start;
+                  align-content: start;
+                  justify-content: flex-start;
+                "
               >
-                <el-card class="radius" :style="{ borderRadius: '12px' }">
-                  <el-image fit="contain" :src="item.image" style="width: 100%; height: 150px" />
-                  <el-text size="large" tag="b">{{ item.nombre }}</el-text>
-                  <el-text size="small" tag="p">{{
-                    new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(
-                      item.precio
-                    )
-                  }}</el-text>
-                  <el-text size="small" tag="p">{{ item.descripcion }}</el-text>
-                  <el-button type="primary">+ Agregar Producto</el-button>
+                <el-card
+                  class="radius grid-content"
+                  style="
+                    border-radius: 12px;
+                    height: 100%;
+                    width: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    align-content: center;
+                    justify-content: center;
+                  "
+                >
+                  <el-row style="padding: 0 4%" :gutter="10">
+                    <el-col style="width: 100%" :md="12" :xs="24" :sm="24" :lg="24" :xl="24">
+                      <el-image
+                        fit="contain"
+                        :src="item.image"
+                        style="width: 100%; height: 140px"
+                      />
+                    </el-col>
+                    <el-col :md="12" :xs="24" :sm="24" :lg="24" :xl="24">
+                      <el-text size="large" tag="b">{{ item.nombre }}</el-text>
+
+                      <el-text size="small" tag="p">{{
+                        new Intl.NumberFormat('es-CO', {
+                          style: 'currency',
+                          currency: 'COP',
+                        }).format(item.precio)
+                      }}</el-text>
+                      <el-text size="small" tag="p" style="width: 150px" truncated>{{
+                        item.descripcion
+                      }}</el-text>
+                    </el-col>
+                    <el-col
+                      :md="12"
+                      :xs="24"
+                      :sm="24"
+                      :lg="24"
+                      :xl="24"
+                      style="text-align: center; padding: 5px"
+                    >
+                      <el-button
+                        type="primary"
+                        style="
+                          background-color: #6c48ba;
+                          width: 100%;
+                          padding: 5px 10px;
+                          font-size: 0.8rem;
+                        "
+                      >
+                        + Agregar Producto
+                      </el-button>
+                    </el-col>
+                  </el-row>
                 </el-card>
               </el-col>
             </el-row>
@@ -106,6 +105,7 @@
 import axiosInstance from '../helpers/axiosInstance'
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useAuthStore } from '../stores/useAuthStore'
+import Header from '../components/Header.vue'
 import { useRoute, useRouter } from 'vue-router'
 const router = useRouter()
 import {
@@ -126,22 +126,16 @@ import {
 const isCollapse = ref(false)
 const authStore = useAuthStore()
 interface productInterface {
+  id_producto: string
   nombre: string
   descripcion: string
   marca: string
-  precio: string
-  image: string
-  categorias: [string]
+  precio: number
+  image?: string
+  categorias: string
+  id_estado: boolean
 }
 
-const filterTableData = computed(() =>
-  tableData.value.filter(
-    (data) => !search.value || data.nombre.toLowerCase().includes(search.value.toLowerCase())
-  )
-)
-const salir = () => {
-  authStore.logOut(router)
-}
 const search = ref('')
 const tableData = ref([
   {
@@ -184,10 +178,19 @@ const tableData = ref([
 onMounted(() => {
   consultarProductos()
 })
+
+const filterTableData = ref<productInterface[]>([])
+
+const filtrarLista = (valor: string) => {
+  filterTableData.value = tableData.value.filter((item) =>
+    item.nombre.toLowerCase().includes(valor.toLowerCase())
+  )
+}
 const consultarProductos = async () => {
   try {
     const response = await axiosInstance.get('/productos')
     tableData.value = response.data
+    filterTableData.value = response.data
   } catch (error) {
     console.error('Error al cargar los productos:', error)
     throw error

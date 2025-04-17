@@ -35,4 +35,6 @@ app.use((err, req, res, next) => {
 
 app.listen(port, () => {
     console.log(chalk.bgCyan(`Servidor en ejecución en http://127.0.0.1:${port}`));
+    console.log(chalk.bgCyan(`Running:${process.env.NODE_ENV}`));
+    console.log(chalk.bgCyan(`Database:${process.env.DB_NAME}`));
 });

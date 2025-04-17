@@ -57,7 +57,7 @@ export const useAuthStore = defineStore('auth', {
         console.log('Login successful:', response.data);
         try {
           console.log('Redirecting to store...');
-          router.push('/store');
+          router.push('/');
           console.log('Redirected!');
 
         } catch (error) {

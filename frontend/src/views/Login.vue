@@ -78,6 +78,7 @@
         <!-- Contraseña -->
         <el-form-item prop="password">
           <el-input
+          show-password
             v-model="ruleForm.password"
             size="large"
             type="password"

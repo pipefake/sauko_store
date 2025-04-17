@@ -1,12 +1,14 @@
 <script setup lang="ts">
+//IMPORTS
 import { AdvancedImage } from '@cloudinary/vue'
 import { Cloudinary } from '@cloudinary/url-gen'
 import { sepia } from '@cloudinary/url-gen/actions/effect'
 import { ref, reactive, computed, onMounted } from 'vue'
 import { default as CreateProduct } from '../components/CreateProduct.vue'
+import { default as EditProduct } from '../components/EditProduct.vue'
+import { default as Header } from '../components/Header.vue'
 import 'axios'
 import axiosInstance from '../helpers/axiosInstance'
-
 import {
   Calendar,
   Search,
@@ -25,63 +27,52 @@ import axios from 'axios'
 import { columns } from 'element-plus/es/components/table-v2/src/common.mjs'
 import { ElMessage } from 'element-plus'
 
+//INTERRFACES
 interface productInterface {
   nombre: string
   descripcion: string
   marca: string
-  precio: string
+  precio: number
   categorias: [string]
+  id_estado: boolean
+  id_producto: number
+  image: string
 }
 
+//REFERENCIAS
 const search = ref('')
-const tableData = ref([
-  {
-    id_producto: '2',
-    nombre: 'Crema dental',
-    descripcion: 'Crema dental para dientes sensibles',
-    marca: 'Frotident',
-    precio: 40000,
-    categorias: 'Aseo',
-    id_estado: true,
-  },
-  // {
-  //   id_producto: '1',
-  //   nombre: 'Arena para gato',
-  //   descripcion: 'Arena para gato de 10kg',
-  //   marca: 'ArenaCat',
-  //   precio: 40000,
-  //   categorias: 'Comida',
-  //   id_estado: true,
-  // },
-  // {
-  //   id_producto: '3',
-  //   nombre: 'Salchichas',
-  //   descripcion: 'Paquete de 10 salchichas',
-  //   marca: 'Zenu',
-  //   precio: 40000,
-  //   categorias: 'Comida',
-  //   id_estado: true,
-  // },
-  // {
-  //   id_producto: '4',
-  //   nombre: 'Cocacola',
-  //   descripcion: 'Cocacola de 2L',
-  //   marca: 'Cocacola',
-  //   precio: 40000,
-  //   categorias: 'Comida',
-  //   id_estado: true,
-  // },
-])
+const tableData = ref<productInterface[]>([])
+
 onMounted(() => {
   consultarProductos()
 })
+
 const consultarProductos = async () => {
   try {
-    const response = await axiosInstance.get('/productos')
+    const response = await axiosInstance.get('/productos_admin')
     tableData.value = response.data
   } catch (error) {
     console.error('Error al cargar los productos:', error)
     throw error
+  }
+}
+
+const actualizarProducto = async (id_producto: number) => {
+  try {
+    const response = await axiosInstance.put('/producto/' + id_producto)
+    if (response.status === 200) {
+      // console.log('Producto actualizado con éxito')
+      ElMessage({
+        message: 'Producto actualizado con éxito.',
+        type: 'success',
+      })
+      consultarProductos()
+    } else {
+      console.error('Error al actualizar el producto:', response)
+      ElMessage.error('Hubo un error al actualizar el producto.')
+    }
+  } catch (error) {
+    console.error('Error al actualizar el producto:', error)
   }
 }
 
@@ -103,9 +94,6 @@ const myImg = cld.image('front_face')
 // Apply a sepia effect.
 myImg.effect(sepia())
 
-const handleEdit = (index: number, row: User) => {
-  console.log(index, row)
-}
 const handleDelete = async (id_producto: number) => {
   try {
     const response = await axiosInstance.delete('/producto/' + id_producto)
@@ -150,100 +138,51 @@ const onSubmit = () => {
     <el-container>
       <el-container>
         <el-header class="headerContainer">
-          <el-row>
-            <el-col :span="6" :xs="24">
-              <div class="grid-content ep-bg-purple">
-                <el-button @click="isCollapse = !isCollapse">
-                  <el-icon><Expand /></el-icon>
-                </el-button>
-
-                <!-- <el-radio-group v-model="isCollapse" style="margin-bottom: 20px">
-                  <el-radio-button :value="false">expand</el-radio-button>
-                  <el-radio-button :value="true">collapse</el-radio-button>
-                </el-radio-group> -->
-                <!-- <AdvancedImage :cldImg="myImg" /> -->
-              </div>
-            </el-col>
-            <el-col :span="10" :xs="24">
-              <div class="grid-content ep-bg-purple-light">
-                <!-- <el-input v-model="input4" style="width: 400px" placeholder="Type something">
-                  <template #prefix>
-                    <el-icon class="el-input__icon"><search /></el-icon>
-                  </template>
-                </el-input> -->
-              </div>
-            </el-col>
-            <el-col :span="8" :xs="24">
-              <el-row style="height: 100%" justify="end">
-                <el-dropdown>
-                  <el-button @click="isCollapse = !isCollapse">
-                    <el-icon><Setting /></el-icon>
-                  </el-button>
-                  <template #dropdown>
-                    <el-dropdown-menu>
-                      <el-dropdown-item>View</el-dropdown-item>
-                      <el-dropdown-item>Add</el-dropdown-item>
-                      <el-dropdown-item>Delete</el-dropdown-item>
-                    </el-dropdown-menu>
-                  </template>
-                </el-dropdown>
-              </el-row>
-            </el-col>
-          </el-row>
+          <Header :isBuscador="false" />
         </el-header>
+
         <el-container>
-          <el-aside width="200px">
-            <el-scrollbar>
-              <el-menu
-                :collapse="isCollapse"
-                style="background-color: white; height: '100vh'"
-                :default-openeds="['2', '3']"
-              >
-                <el-sub-menu index="2">
-                  <template #title>
-                    <el-icon><icon-menu /></el-icon>Navegador
-                  </template>
-                  <el-menu-item-group>
-                    <template #title>Grupo 1</template>
-                    <el-menu-item index="2-1">Opción 1</el-menu-item>
-                    <el-menu-item index="2-2">Opción 2</el-menu-item>
-                  </el-menu-item-group>
-                  <el-menu-item-group title="Grupo 2">
-                    <el-menu-item index="2-3">Opción 3</el-menu-item>
-                  </el-menu-item-group>
-                  <el-sub-menu index="2-4">
-                    <template #title>Opción 4</template>
-                    <el-menu-item index="2-4-1">Opción 4-1</el-menu-item>
-                  </el-sub-menu>
-                </el-sub-menu>
-              </el-menu>
-            </el-scrollbar>
-          </el-aside>
           <el-container>
-            <el-main>
+            <el-main
+              style="
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+              "
+            >
               <el-card style="width: 80vw" shadow="always">
                 <template #header>
                   <el-container>
                     <el-row :gutter="10" style="width: 100%">
                       <el-col :span="12">
-                        <CreateProduct />
+                        <CreateProduct @updateFiltro="consultarProductos" />
                       </el-col>
                       <el-col :span="12">
                         <div class="grid-content ep-bg-purple">
-                          <el-input v-model="search" size="large" placeholder="Escribe para buscar" />
+                          <el-input
+                            v-model="search"
+                            size="large"
+                            placeholder="Escribe para buscar"
+                          />
                         </div>
                       </el-col>
                     </el-row>
                   </el-container>
                 </template>
+
                 <el-table :data="filterTableData" style="width: 100%" height="400">
                   <el-table-column prop="nombre" label="Nombre " sortable />
                   <el-table-column prop="descripcion" label="Descripción" />
                   <el-table-column prop="marca" label="Marca" sortable />
-                  <el-table-column prop="precio" label="Precio" sortable>
-                    <template #default="scope">
-                      ${{ scope.row.precio.toLocaleString('es-CO') }}
-                    </template>
+                  <el-table-column
+                    prop="precio"
+                    label="Precio"
+                    :sortable="true"
+                    :sort-method="(a, b) => a.precio - b.precio"
+                  >
+                    <template #default="scope"> ${{ scope.row.precio }} </template>
                   </el-table-column>
                   <el-table-column
                     prop="categorias"
@@ -270,6 +209,7 @@ const onSubmit = () => {
                         class="ml-2"
                         inline-prompt
                         style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
+                        @change="actualizarProducto(scope.row.id_producto)"
                         active-text="Y"
                         inactive-text="N"
                       />
@@ -277,22 +217,21 @@ const onSubmit = () => {
                   </el-table-column>
                   <el-table-column label="Operations">
                     <template #default="scope">
-                      <el-button size="small" @click="handleEdit(scope.$index, scope.row)">
-                        <el-icon><EditPen /></el-icon>
-                      </el-button>
-                      <el-popconfirm
-                        class="box-item"
-                        title="¿Estás seguro de que quieres eliminar este producto?"
-                        
-                        placement="bottom"
-                        @confirm="handleDelete(scope.row.id_producto)"
-                      >
-                        <template #reference>
-                          <el-button size="small" type="danger">
-                            <el-icon><DeleteFilled /></el-icon>
-                          </el-button>
-                        </template>
-                      </el-popconfirm>
+                      <el-row>
+                        <EditProduct @updateFiltro="consultarProductos" :productProps="scope.row" />
+                        <el-popconfirm
+                          class="box-item"
+                          title="¿Estás seguro de que quieres eliminar este producto?"
+                          placement="bottom"
+                          @confirm="handleDelete(scope.row.id_producto)"
+                        >
+                          <template #reference>
+                            <el-button size="small" type="danger">
+                              <el-icon><DeleteFilled /></el-icon>
+                            </el-button>
+                          </template>
+                        </el-popconfirm>
+                      </el-row>
                     </template>
                   </el-table-column>
                 </el-table>
