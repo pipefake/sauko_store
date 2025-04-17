@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const productController = require('../controllers/productController');
 const upload = require("../middleware/multer");
-const { verifyToken, verifyAuthorization } = require('../middleware/Auth');
+const { verifyToken, verifyAuthorization } = require('../middleware/auth');
 
 //rutas para los productos
 router.post('/producto', upload.single('image'), verifyToken, verifyAuthorization, productController.agregarProducto);  // Para agregar un nuevo producto
