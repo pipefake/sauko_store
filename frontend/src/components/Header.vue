@@ -25,7 +25,7 @@
     </el-col>
     <el-col :span="7" :xs="24" justify="end">
       <div class="grid-content ep-bg-purple">
-        <Carrito />
+        <!-- <Carrito /> -->
         <!-- <el-button @click="salir()" background="#6c48ba" size="small">
           <el-icon><Expand /></el-icon>
         </el-button> -->
@@ -73,7 +73,7 @@ import { useAuthStore } from '../stores/useAuthStore'
 import { useRoute, useRouter } from 'vue-router'
 import { AdvancedImage } from '@cloudinary/vue'
 import { Cloudinary } from '@cloudinary/url-gen'
-import { Carrito } from './Carrito.vue'
+// import { Carrito } from './Carrito.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
