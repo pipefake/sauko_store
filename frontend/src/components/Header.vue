@@ -26,6 +26,9 @@
     <el-col :span="7" :xs="24" justify="end">
       <div class="grid-content ep-bg-purple">
         <router-link to="/login" class="btn-login"> Ir al Login </router-link>
+        <router-link to="/gestion_productos" class="btn-login">
+          Ir al gestion_productos
+        </router-link>
 
         <!-- <Carrito /> -->
         <!-- <el-button @click="salir()" background="#6c48ba" size="small">
